@@ -1,0 +1,90 @@
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!-- production version, optimized for size and speed
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    -->
+</head>
+
+<body>
+
+<div id="appId">
+
+    <h3>Simple Properties</h3>
+
+    These are defined in the data property of the Vue object.
+    <div v-bind:title="startupDate">
+        A property: <b>{{ message }} - try at console: app.message = "Test"</b>
+    </div>
+
+
+    <h3>A Computed Property</h3>
+
+    These are defined in the computed property of the Vue object.
+    <div style="margin-top: 1rem;">
+        Computed property: <b>{{ computedProp }}</b>
+        <br/>This prop is cached and only re-evaluated if its dependencies have changed.
+        <button v-on:click="updateDependency">Update Dependency</button>
+        <br/>For example, change one dependency: at console try: app.dependency = "xyz2"
+        <br/>See <a href="https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods">details here.</a>
+    </div>
+
+    <h3>Invoking a Function</h3>
+
+    These are defined in the methods property of the Vue object.
+    <div style="margin-top: 1rem;">
+        Invoking method computedMessageFct: <b>{{ computedMessageFct() }}</b>
+        <br/>
+        This will be invoked everytime the ui re-renders (independently of dependencies).
+        It's been updated every second because clock property is causing ui update.
+    </div>
+
+    <div style="margin-top: 2rem;">
+        A property with changing value in timer interval: <b>{{ clock }}</b>
+    </div>
+
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#appId',
+        data: {
+            message: 'Hello Vue! - This is Vue version: ' + Vue.version,
+            startupDate: new Date().toLocaleString(),
+            clock: new Date().toLocaleString(),
+            dependency: "I'm dependency property",
+            flag: true
+        },
+        computed: {
+            computedProp: function () {
+                // `this` points to the app instance
+                return "App startup time: " + this.startupDate + " - Execution time: " + new Date().toLocaleString() + " - Dependency: " + this.dependency;
+            }
+        },
+        methods: {
+            updateDependency: function () {
+                if ( this.flag )
+                    this.dependency = "New value 1 for dependency property";
+                else
+                    this.dependency = "New value 2 for dependency property";
+
+                this.flag = ! this.flag;
+            },
+            computedMessageFct: function () {
+//                debugger;
+                return new Date().toLocaleString();
+            },
+            updateTime: function () {
+//                debugger;
+                this.clock = new Date().toLocaleString();
+            }
+        }
+    });
+
+    setInterval(function(){app.updateTime()}, 1000);
+</script>
+
+</body>
+</html>
